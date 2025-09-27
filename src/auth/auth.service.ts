@@ -13,9 +13,9 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async register(login: string, password: string, name?: string) {
+  async register(login: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 10)
-    const user = this.userRepository.create({ login, password: hashedPassword, name })
+    const user = this.userRepository.create({ login, password: hashedPassword })
     await this.userRepository.save(user)
     return { message: 'User registered successfully' }
   }
