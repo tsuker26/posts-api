@@ -11,7 +11,6 @@ import {
   Req,
   UploadedFiles,
   UseInterceptors,
-  ParseIntPipe,
 } from '@nestjs/common'
 import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import { PostService } from './post.service'
