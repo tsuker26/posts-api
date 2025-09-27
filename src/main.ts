@@ -4,6 +4,7 @@ import 'reflect-metadata'
 import { ValidationPipe } from '@nestjs/common'
 import { join } from 'path'
 import { NestExpressApplication } from '@nestjs/platform-express'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -15,6 +16,8 @@ async function bootstrap() {
       transform: true,
     })
   )
+
+  app.use(cookieParser())
 
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',

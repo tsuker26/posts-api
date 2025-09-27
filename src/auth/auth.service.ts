@@ -22,22 +22,34 @@ export class AuthService {
 
   async login(login: string, password: string) {
     const user = await this.userRepository.findOne({ where: { login } })
-    console.log('Найден пользователь:', user)
-
     if (!user) return null
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
-    console.log('Пароль совпадает:', isPasswordValid)
-
     if (!isPasswordValid) return null
 
     const payload = { sub: user.id, login: user.login }
-    return {
-      access_token: this.jwtService.sign(payload),
-    }
+
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' })
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' })
+
+    return { accessToken, refreshToken }
   }
 
-  async getUsers() {
-    return this.userRepository.find()
+  refreshToken(refresh: string) {
+    try {
+      const payload = this.jwtService.verify(refresh)
+      const newAccess = this.jwtService.sign(
+        { sub: payload.sub, login: payload.login },
+        { expiresIn: '15m' }
+      )
+      const newRefresh = this.jwtService.sign(
+        { sub: payload.sub, login: payload.login },
+        { expiresIn: '7d' }
+      )
+
+      return { accessToken: newAccess, refreshToken: newRefresh }
+    } catch {
+      return null
+    }
   }
 }
