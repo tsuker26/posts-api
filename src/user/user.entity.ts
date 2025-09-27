@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
+import { Post } from '../post/post.entity'
 
 @Entity('users')
 export class User {
@@ -31,4 +32,7 @@ export class User {
 
   @Column({ nullable: true })
   avatar: string
+
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[]
 }

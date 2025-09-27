@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module'
 import { User } from './user/user.entity'
 import { UserModule } from './user/user.module'
+import { Post } from './post/post.entity'
+import { PostModule } from './post/post.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -17,12 +19,13 @@ import { UserModule } from './user/user.module'
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        entities: [User],
+        entities: [User, Post],
         synchronize: true,
       }),
     }),
     AuthModule,
     UserModule,
+    PostModule,
   ],
 })
 export class AppModule {}
