@@ -6,6 +6,7 @@ import { User } from './user/user.entity'
 import { UserModule } from './user/user.module'
 import { Post } from './post/post.entity'
 import { PostModule } from './post/post.module'
+import { UploadModule } from './upload/upload.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -26,6 +27,7 @@ import { PostModule } from './post/post.module'
     AuthModule,
     UserModule,
     PostModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

@@ -1,33 +1,30 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   Post as HttpPost,
-  Patch,
-  Delete,
-  Body,
   Param,
+  Patch,
+  Post,
   Query,
-  UseGuards,
   Req,
   UploadedFiles,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common'
-import { FileFieldsInterceptor } from '@nestjs/platform-express'
-import { PostService } from './post.service'
-import { CreatePostDto, UpdatePostDto } from './dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { diskStorage } from 'multer'
-import { extname } from 'path'
+import { CreatePostDto, UpdatePostDto } from './dto'
+import { PostService } from './post.service'
 
 import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
-  ApiQuery,
+  ApiOperation,
   ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger'
 
 @ApiTags('Посты')
@@ -63,26 +60,22 @@ export class PostController {
   })
   @UseGuards(JwtAuthGuard)
   @HttpPost()
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'images', maxCount: 10 }], {
-      storage: diskStorage({
-        destination: './uploads/posts',
-        filename: (_, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-          cb(null, uniqueSuffix + extname(file.originalname))
-        },
-      }),
-    })
-  )
-  async create(
-    @Req() req,
-    @Body() body: any,
-    @UploadedFiles() files: { images?: Express.Multer.File[] }
-  ) {
+  // @UseInterceptors(
+  //   FileFieldsInterceptor([{ name: 'images', maxCount: 10 }], {
+  //     storage: diskStorage({
+  //       destination: './uploads/posts',
+  //       filename: (_, file, cb) => {
+  //         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+  //         cb(null, uniqueSuffix + extname(file.originalname))
+  //       },
+  //     }),
+  //   })
+  // )
+  @Post()
+  async create(@Req() req, @Body() body: { text: string; images?: string[] }) {
     const dto = new CreatePostDto()
     dto.text = body.text
-    dto.images = files?.images?.map((file) => file.path) || []
-
+    dto.images = body.images || []
     return this.postService.create(req.user.sub, dto)
   }
 

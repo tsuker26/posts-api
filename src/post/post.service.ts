@@ -3,9 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Post } from './post.entity'
 import { CreatePostDto, UpdatePostDto } from './dto'
+import { join } from 'path'
+import { promises as fs } from 'fs'
 
 @Injectable()
 export class PostService {
+  private readonly uploadPath = join(process.cwd(), 'uploads/posts')
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>
@@ -53,5 +56,25 @@ export class PostService {
       order: { createdAt: sort || 'DESC' },
       relations: ['author'],
     })
+  }
+
+  saveImage(file: Express.Multer.File) {
+    return {
+      url: `/uploads/posts/${file.filename}`, // ссылка для фронта
+      filename: file.filename,
+    }
+  }
+
+  async deleteImage(filename: string) {
+    const filePath = join(this.uploadPath, filename)
+
+    try {
+      await fs.access(filePath)
+      await fs.unlink(filePath)
+      return { message: 'Изображение удалено', filename }
+    } catch (e) {
+      console.log(e)
+      return { message: 'Файл не найден', filename }
+    }
   }
 }

@@ -23,9 +23,9 @@ export class UserService {
     return this.userRepository.save(user)
   }
 
-  async updateAvatar(userId: number, avatarPath: string): Promise<User> {
+  async updateAvatar(userId: number, avatarUrl: string): Promise<User> {
     const user = await this.getProfile(userId)
-    user.avatar = avatarPath
+    user.avatar = avatarUrl
     return this.userRepository.save(user)
   }
 }
