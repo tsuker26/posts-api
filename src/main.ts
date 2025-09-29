@@ -28,6 +28,8 @@ async function bootstrap() {
     const user = userRepository.create({
       login: 'admin',
       password: hashedPassword,
+      firstName: 'Иван',
+      lastName: 'Иванов',
     })
     await userRepository.save(user)
   }
