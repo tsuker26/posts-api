@@ -9,7 +9,6 @@ import {
   Post,
   Query,
   Req,
-  UploadedFiles,
   UseGuards,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
@@ -60,17 +59,6 @@ export class PostController {
   })
   @UseGuards(JwtAuthGuard)
   @HttpPost()
-  // @UseInterceptors(
-  //   FileFieldsInterceptor([{ name: 'images', maxCount: 10 }], {
-  //     storage: diskStorage({
-  //       destination: './uploads/posts',
-  //       filename: (_, file, cb) => {
-  //         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-  //         cb(null, uniqueSuffix + extname(file.originalname))
-  //       },
-  //     }),
-  //   })
-  // )
   @Post()
   async create(@Req() req, @Body() body: { text: string; images?: string[] }) {
     const dto = new CreatePostDto()
